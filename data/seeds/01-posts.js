@@ -6,15 +6,18 @@ exports.seed = function(knex, Promise) {
         {
           title:
             'I wish the ring had never come to me. I wish none of this had happened.',
-          contents: 'Guess who said this',
+          contents: 
+          'Guess who said this',
         },
         {
-          title: 'I think we should get off the road. Get off the road! Quick!',
-          contents: 'Guess who said this',
+          title: 
+          'I think we should get off the road. Get off the road! Quick!',
+          contents: 
+          'Guess who said this',
         },
         {
-          title:
-            "I made a promise, Mr Frodo. A promise. \"Don't you leave him Samwise Gamgee.\" And I don't mean to. I don't mean to.",
+          title: 
+          "I made a promise, Mr Frodo. A promise. \"Don't you leave him Samwise Gamgee.\" And I don't mean to. I don't mean to.",
           contents: 'Guess who said this',
         },
         {
@@ -30,12 +33,14 @@ exports.seed = function(knex, Promise) {
         {
           title:
             'All you have to do is decide what to do with the time that is given to you.',
-          contents: 'Guess who said this',
+          contents: 
+          'Guess who said this',
         },
         {
           title:
             'Do not be so quick to deal out death and judgement. Even the very wise do not see all ends.',
-          contents: 'Guess who said this',
+          contents: 
+          'Guess who said this',
         },
         {
           title:
