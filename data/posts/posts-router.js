@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require('../db');
+const { response } = require("express");
  
 // const dbpost = require('../posts/postsRouter');
 
@@ -77,14 +78,19 @@ router.get('/api/posts', (req, res) => {
 //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 // Returns the post object with the specified id
 //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-router.get('/:id', (req, res) => {
+router.get('/api/posts/:id', (req, res) => {
     db.findById(req.params.id)
-      .then(({post}) => {
-        { post 
-            ?res.status(200).json(post) 
-            :res.status(404).json({ 
-                message: 'Post not found ' 
-            })}
+      .then((post) => {
+        if (post) {
+            res.status(200).json(post) 
+        } else if (post === []) {
+            res.status(404).json({ 
+                message: 'Post not found' 
+            })
+          } else {
+            return post;
+          }
+
       })
       .catch(error => {
         console.log(error);
@@ -110,7 +116,8 @@ router.get('/api/posts/:id/comments', (req, res) => {
         }
       })
       .catch(error => {
-        res.status(500).json({ errorMessage: 'Server error, could not get comments', error })
+        console.log(error)
+        res.status(500).json({ errorMessage: 'Server error, could not get comments'})
       })
   })
 
@@ -119,19 +126,48 @@ router.get('/api/posts/:id/comments', (req, res) => {
  // object**. You may need to make additional calls to the database in order 
  // to satisfy this requirement.
  //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
- router.delete('/api/posts/:id', (req, res) => {
-    db.remove(req.params.id)
-      .then(count => {
-        if(count > 0) {
-          res.status(200).json({ message: 'Post deleted!' })
+ router.delete("/api/posts/:id", (req, res) => {
+  const id = req.params.id;
+ 
+  // If the post with the specified id is not found:
+    db.findById(id).then((post) => {
+      console.log(post)
+    if (post.length === 0) {
+      res.status(404).json({
+        errorMessage: "The post with the specified ID does not exist",
+      });
+    } else if (post.length > 0) {
+      db.remove(id).then((removed) => {
+        if (removed=== 1) {
+          db.find().then((post) => {
+            if (post) {
+              res.status(200).json(post);
+              // If there's an error in retrieving the posts from the database:
+            }
+          });
         } else {
-          res.status(404).json({ message: 'Post could not be located.' })
+          res
+            .status(500)
+            .json({ errorMessage: "The post could not be removed" });
         }
-      })
-      .catch(error => {
-        res.status(500).json({ message: '** Server error removing the post **', error })
-      })
+      });
+    }
   });
+});
+  //     let id = req.params.id;
+  //   db.remove(id)
+  //     .then(res => {
+  //       console.log('App', id)
+  //       if(id) {
+  //         res.status(200).json({ message: 'Post deleted!' })
+  //       } else {
+  //         res.status(404).json({ message: 'Post could not be located.' })
+  //       }
+  //     })
+  //     .catch(error => {
+  //       res.status(500).json({ message: '** Server error removing the post **', error })
+  //     })
+  // });
 
  //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
  // Updates the post with the specified `id` using data from the `request body`. 
